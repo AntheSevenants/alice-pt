@@ -27,3 +27,17 @@ df$Accessibility_Theme <-
   ifelse(df$Accessibility_Theme == "Yes", 1, 0) %>% as.logical()
 df$Theme_Form <- as.factor(df$Theme_Form)
 
+# Inspect levels
+levels(df$Genre)
+levels(df$Register)
+levels(df$Construction)
+levels(df$Lemma)
+levels(df$Syntactic_Integration)
+levels(df$Focus)
+levels(df$Transfer_Type)
+levels(df$Person_Recipient)
+levels(df$Animacy)
+levels(df$Definiteness_Recipient)
+levels(df$Affectedness_Recipient)
+levels(df$Topic)
+levels(df$Theme_Form)
