@@ -4,28 +4,50 @@ library(magrittr)
 # Load ElasticToolsR
 source("ElasticToolsR/Dataset.R")
 source("ElasticToolsR/ElasticNet.R")
+source("ElasticToolsR/MetaFile.R")
 
 # Read dataset
 df <- read.delim("FilterByLemma.tsv")
-df$Genre <- as.factor(df$Genre)
+
+df$Genre <- df$Genre %>% paste0("_Genre_", .) %>% as.factor()
+
 df$Register <- as.factor(df$Register)
+
 df$Construction <- as.factor(df$Construction)
+
 df$Lemma <- as.factor(df$Lemma)
-df$Syntactic_Integration <- as.factor(df$Syntactic_Integration)
+
+df$Syntactic_Integration <-
+  df$Syntactic_Integration %>% paste0("_SI_", .) %>% as.factor()
+
 df$Agent_Explicit <-
   ifelse(df$Agent_Explicit == "Yes", 1, 0) %>% as.logical()
+
 df$Focus <- as.factor(df$Focus)
-df$Transfer_Type <- as.factor(df$Transfer_Type)
+
+df$Transfer_Type <- df$Transfer_Type %>% paste0("_TT_", .) %>% as.factor()
+
 df$Person_Recipient <- as.factor(df$Person_Recipient)
-df$Animacy <- as.factor(df$Animacy)
+
+df$Animacy <- df$Animacy %>% paste0("_Anim_", .) %>% as.factor()
+
 df$Definiteness_Recipient <- as.factor(df$Definiteness_Recipient)
-df$Affectedness_Recipient <- as.factor(df$Affectedness_Recipient)
-df$Topic <- as.factor(df$Topic)
+
+df$Affectedness_Recipient <- 
+  df$Affectedness_Recipient %>% paste0("_AR_", .) %>% as.factor()
+
+df$Topic <- df$Topic %>% paste0("_Topic_", .) %>% as.factor()
+
 df$Accessibility_Recipient <-
   ifelse(df$Accessibility_Recipient == "Yes", 1, 0) %>% as.logical()
+
 df$Accessibility_Theme <-
   ifelse(df$Accessibility_Theme == "Yes", 1, 0) %>% as.logical()
-df$Theme_Form <- as.factor(df$Theme_Form)
+
+df$Theme_Form <- df$Theme_Form %>% paste0("_Theme_Form_", .) %>% as.factor()
+
+df$Length_Recipient <- df$Length_Recipient %>% as.double()
+df$Length_Theme <- df$Length_Theme %>% as.double()
 
 # Inspect levels
 levels(df$Genre)
@@ -45,8 +67,12 @@ levels(df$Theme_Form)
 # Define the dataset
 ds <- dataset(df=df,
               response_variable_column="Construction",
-              to_binary_columns=c("Lemma", "Genre"),
-              other_columns=c("Register", "Focus"))
+              to_binary_columns=c("Lemma", "Genre", "Syntactic_Integration",
+                                  "Transfer_Type", "Animacy", "Theme_Form",
+                                  "Affectedness_Recipient", "Topic"),
+              other_columns=c("Register", "Focus", "Definiteness_Recipient"))
+
+feature_matrix <- ds$as_matrix()
 
 # Define Elastic Net object
 net <- elastic_net(ds=ds,
@@ -82,3 +108,4 @@ for (attribute in colnames(lowest_loss_row)) {
 }
 
 write.csv(model_meta$as.data.frame(), "output/model_meta.csv", row.names=FALSE)
+
