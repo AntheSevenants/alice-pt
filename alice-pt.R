@@ -13,7 +13,8 @@ df$Genre <- df$Genre %>% paste0("_Genre_", .) %>% as.factor()
 
 df$Register <- as.factor(df$Register)
 
-df$Construction <- as.factor(df$Construction)
+df$Construction <- factor(df$Construction,
+                          levels=c("Theme Passives", "Recipient Passives"))
 
 df$Lemma <- as.factor(df$Lemma)
 
@@ -108,4 +109,3 @@ for (attribute in colnames(lowest_loss_row)) {
 }
 
 write.csv(model_meta$as.data.frame(), "output/model_meta.csv", row.names=FALSE)
-
