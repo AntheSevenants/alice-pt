@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  alice-rstudio:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    ports: 
+      - "8787:8787"
+    environment:
+      PASSWORD: 'alice'
+    volumes:
+      - .:/home/rstudio/alice-pt/
